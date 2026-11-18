@@ -57,7 +57,7 @@ Qeq.Infrastructure.Identity     # xác thực 1 người dùng: 1 token cố đ�
 Qeq.Api                         # REST controllers, endpoint SSE, MCP server endpoint, BackgroundService
 ```
 
-Mỗi mảng nghiệp vụ (Expenses, Planning, Notes, Agents) là thư mục con trong từng lớp. Đổi provider LLM = thay 1 class ở Infrastructure, agent không đổi.
+Domain tổ chức theo loại: `Entities/` và `Enums/` riêng. Các lớp còn lại chia thư mục con theo mảng nghiệp vụ (Expenses, Planning, Notes, Agents). Đổi provider LLM = thay 1 class ở Infrastructure, agent không đổi.
 
 ### 2.3 Sơ đồ tổng thể
 
