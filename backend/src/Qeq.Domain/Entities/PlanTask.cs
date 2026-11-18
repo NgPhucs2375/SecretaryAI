@@ -1,4 +1,6 @@
-namespace Qeq.Domain.Planning;
+using Qeq.Domain.Enums;
+
+namespace Qeq.Domain.Entities;
 
 public class PlanTask
 {

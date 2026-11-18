@@ -1,4 +1,4 @@
-namespace Qeq.Domain.Planning;
+namespace Qeq.Domain.Enums;
 
 public enum TaskImportance
 {

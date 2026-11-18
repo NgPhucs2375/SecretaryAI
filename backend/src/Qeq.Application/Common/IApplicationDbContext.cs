@@ -1,8 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Qeq.Domain.Agents;
-using Qeq.Domain.Expenses;
-using Qeq.Domain.Notes;
-using Qeq.Domain.Planning;
+using Qeq.Domain.Entities;
 
 namespace Qeq.Application.Common;
 

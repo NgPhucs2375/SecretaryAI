@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Pgvector;
-using Qeq.Domain.Notes;
+using Qeq.Domain.Entities;
 
 namespace Qeq.Infrastructure.Persistence.Configurations;
 

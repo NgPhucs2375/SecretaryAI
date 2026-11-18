@@ -1,4 +1,4 @@
-namespace Qeq.Domain.Agents;
+namespace Qeq.Domain.Enums;
 
 public enum BriefingKind
 {

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Qeq.Domain.Agents;
+using Qeq.Domain.Entities;
 
 namespace Qeq.Infrastructure.Persistence.Configurations;
 

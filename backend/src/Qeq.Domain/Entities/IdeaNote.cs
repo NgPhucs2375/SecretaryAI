@@ -1,4 +1,4 @@
-namespace Qeq.Domain.Notes;
+namespace Qeq.Domain.Entities;
 
 public class IdeaNote
 {

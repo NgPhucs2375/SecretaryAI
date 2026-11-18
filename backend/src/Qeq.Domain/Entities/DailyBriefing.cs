@@ -1,4 +1,6 @@
-namespace Qeq.Domain.Agents;
+using Qeq.Domain.Enums;
+
+namespace Qeq.Domain.Entities;
 
 public class DailyBriefing
 {

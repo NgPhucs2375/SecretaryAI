@@ -1,4 +1,4 @@
-namespace Qeq.Domain.Expenses;
+namespace Qeq.Domain.Enums;
 
 public enum ExpenseCategory
 {

@@ -24,7 +24,7 @@ namespace Qeq.Infrastructure.Persistence.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "vector");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Qeq.Domain.Agents.ChatMessage", b =>
+            modelBuilder.Entity("Qeq.Domain.Entities.ChatMessage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,7 +60,7 @@ namespace Qeq.Infrastructure.Persistence.Migrations
                     b.ToTable("ChatMessages");
                 });
 
-            modelBuilder.Entity("Qeq.Domain.Agents.Conversation", b =>
+            modelBuilder.Entity("Qeq.Domain.Entities.Conversation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,7 +79,7 @@ namespace Qeq.Infrastructure.Persistence.Migrations
                     b.ToTable("Conversations");
                 });
 
-            modelBuilder.Entity("Qeq.Domain.Agents.DailyBriefing", b =>
+            modelBuilder.Entity("Qeq.Domain.Entities.DailyBriefing", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -111,7 +111,7 @@ namespace Qeq.Infrastructure.Persistence.Migrations
                     b.ToTable("Briefings");
                 });
 
-            modelBuilder.Entity("Qeq.Domain.Expenses.Transaction", b =>
+            modelBuilder.Entity("Qeq.Domain.Entities.Transaction", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -143,7 +143,7 @@ namespace Qeq.Infrastructure.Persistence.Migrations
                     b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("Qeq.Domain.Notes.IdeaNote", b =>
+            modelBuilder.Entity("Qeq.Domain.Entities.IdeaNote", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -165,7 +165,7 @@ namespace Qeq.Infrastructure.Persistence.Migrations
                     b.ToTable("IdeaNotes");
                 });
 
-            modelBuilder.Entity("Qeq.Domain.Planning.PlanTask", b =>
+            modelBuilder.Entity("Qeq.Domain.Entities.PlanTask", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -205,16 +205,16 @@ namespace Qeq.Infrastructure.Persistence.Migrations
                     b.ToTable("Tasks");
                 });
 
-            modelBuilder.Entity("Qeq.Domain.Agents.ChatMessage", b =>
+            modelBuilder.Entity("Qeq.Domain.Entities.ChatMessage", b =>
                 {
-                    b.HasOne("Qeq.Domain.Agents.Conversation", null)
+                    b.HasOne("Qeq.Domain.Entities.Conversation", null)
                         .WithMany("Messages")
                         .HasForeignKey("ConversationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Qeq.Domain.Agents.Conversation", b =>
+            modelBuilder.Entity("Qeq.Domain.Entities.Conversation", b =>
                 {
                     b.Navigation("Messages");
                 });
