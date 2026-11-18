@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Qeq.Api/Qeq.Api.csproj" />
+    <Project Path="src/Qeq.Application/Qeq.Application.csproj" />
+    <Project Path="src/Qeq.Domain/Qeq.Domain.csproj" />
+    <Project Path="src/Qeq.Infrastructure.Identity/Qeq.Infrastructure.Identity.csproj" />
+    <Project Path="src/Qeq.Infrastructure.Persistence/Qeq.Infrastructure.Persistence.csproj" />
+    <Project Path="src/Qeq.Infrastructure.Shared/Qeq.Infrastructure.Shared.csproj" />
+  </Folder>
+</Solution>
