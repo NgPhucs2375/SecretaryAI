@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Pgvector;
-using Qeq.Infrastructure.Persistence;
+using Qeq.Infrastructure.Persistence.Contexts;
 
 #nullable disable
 

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Qeq.Infrastructure.Persistence.Contexts;
 
 namespace Qeq.Infrastructure.Persistence;
 

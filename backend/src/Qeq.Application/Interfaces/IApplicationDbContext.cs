@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Qeq.Domain.Entities;
 
-namespace Qeq.Application.Common;
+namespace Qeq.Application.Interfaces;
 
 public interface IApplicationDbContext
 {

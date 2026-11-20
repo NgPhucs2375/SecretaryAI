@@ -7,4 +7,7 @@
     <Project Path="src/Qeq.Infrastructure.Persistence/Qeq.Infrastructure.Persistence.csproj" />
     <Project Path="src/Qeq.Infrastructure.Shared/Qeq.Infrastructure.Shared.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Qeq.Application.Tests/Qeq.Application.Tests.csproj" />
+  </Folder>
 </Solution>

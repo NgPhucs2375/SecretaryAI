@@ -21,3 +21,5 @@ dist/
 Thumbs.db
 .vs/
 .idea/
+# Local secrets — dev config holds real keys, never commit
+**/appsettings.Development.json

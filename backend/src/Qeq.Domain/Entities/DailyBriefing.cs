@@ -1,13 +1,13 @@
+using Qeq.Domain.Common;
 using Qeq.Domain.Enums;
 
 namespace Qeq.Domain.Entities;
-
-public class DailyBriefing
+//báo cáo hàng ngày
+public class DailyBriefing : AuditableBaseEntity
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
     public DateOnly Date { get; set; }
+    // Loại bản tóm tắt: 
     public BriefingKind Kind { get; set; }
     public required string Content { get; set; }
     public bool IsRead { get; set; }
-    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 }

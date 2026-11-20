@@ -57,7 +57,15 @@ Qeq.Infrastructure.Identity     # xác thực 1 người dùng: 1 token cố đ�
 Qeq.Api                         # REST controllers, endpoint SSE, MCP server endpoint, BackgroundService
 ```
 
-Domain tổ chức theo loại: `Entities/` và `Enums/` riêng. Các lớp còn lại chia thư mục con theo mảng nghiệp vụ (Expenses, Planning, Notes, Agents). Đổi provider LLM = thay 1 class ở Infrastructure, agent không đổi.
+Tổ chức theo template Clean Architecture chuẩn (cùng khuôn Proj_CV):
+- **Domain**: `Common/` (BaseEntity, AuditableBaseEntity — Guid Id, CreatedAt), `Entities/`, `Enums/`, `Settings/`.
+- **Application**: `Behaviours/` (ValidationBehavior), `DTOs/`, `Exceptions/` (ApiException, ValidationException), `Features/<NghiệpVụ>/Commands|Queries/<TênUseCase>/` (Command + Handler cùng file, Validator file riêng — MediatR + FluentValidation), `Interfaces/` (IApplicationDbContext, IDateTimeService, Repositories/), `Mappings/`, `Validation/`, `Wrappers/` (Response, PagedResponse, PagedList), `ServiceExtensions.cs` (AddApplicationLayer).
+- **Infrastructure.Persistence**: `Contexts/`, `Configurations/`, `Repositories/` (GenericRepositoryAsync), `Migrations/`, `ServiceRegistration.cs`.
+- **Infrastructure.Shared**: `Services/` (DateTimeService; sau này DeepSeekClient, GeminiEmbedder, ResilientLlmClient), `ServiceRegistration.cs`.
+- **Infrastructure.Identity**: giữ mỏng — xác thực 1 token, không làm user/role CRUD.
+- **Api**: `Controllers/` (BaseApiController gọi Mediator), `Middlewares/` (ErrorHandlerMiddleware).
+
+Đổi provider LLM = thay 1 class ở Infrastructure, agent không đổi.
 
 ### 2.3 Sơ đồ tổng thể
 
@@ -98,6 +106,10 @@ Idea:      add_idea, search_notes   # search_notes = RAG qua pgvector
 
 Tool không nhận SQL thô — chỉ nhận filter trong danh sách cho phép. Mọi tham số validate lại tại use case.
 
+**Cơ chế triển khai (chốt 2026-11-19):** v1 làm **registry in-process trước** — `IQeqTool` (Name/Description/ParametersJson/ExecuteAsync → JSON string) + `IToolRegistry` + `ToolExecutor` trong `Qeq.Application/Tools`, mỗi tool gọi thẳng `IMediator`. Lý do: khớp 1:1 với `LlmTool`/`ILlmClient` tự viết, không cần package mới, agent loop chạy được ngay. **MCP server vẫn là yêu cầu bắt buộc**, chỉ lùi thành bài riêng: `ModelContextProtocol` 2.4.0 + `ModelContextProtocol.AspNetCore` (NuGet, đã tra 2026-11-19) bọc chính registry này qua adapter trong `Qeq.Api`, để client ngoài (Claude Desktop, Qoder…) cắm được. Không viết lại tool khi lên MCP.
+
+Kết quả tool trả về là **JSON string** (không phải `Response<T>`) vì người đọc là LLM qua tin nhắn `role:"tool"`; lỗi cùng hình dạng `{error:"..."}`. Chuẩn hóa synonym nằm ở tool, validate giá trị nằm ở use case — hai lớp riêng. Ghi chú: `LlmMessage` hiện tại sẽ cần mở rộng (`ToolCallId`, `ToolCalls`) khi làm agent loop.
+
 ### 3.3 LLM Router (ResilientLlmClient, Infrastructure.Shared)
 
 Agent chỉ biết `ILlmClient` (theo `IChatClient` của Microsoft.Extensions.AI — nền tảng của Agent Framework). Phía sau:
@@ -115,7 +127,7 @@ Agent chỉ biết `ILlmClient` (theo `IChatClient` của Microsoft.Extensions.A
 
 ### 3.4 Tự sửa lỗi của agent — 3 lớp
 
-1. Chặn tại use case: tham số sai → tool trả lỗi có cấu trúc (`{error: "amount_must_be_positive"}`); agent đọc lỗi, tự gọi lại với tham số sửa. Validate không tốn lần gọi LLM nào.
+1. Chặn tại use case: tham số sai → tool trả lỗi có cấu trúc (`{error: "amount_must_be_positive"}`); agent đọc lỗi, tự gọi lại với tham số sửa. Validate không tốn lần gọi LLM nào. Khi đọc arguments, tool **phải kiểm `ValueKind` trước `TryGet*`**: `TryGetDecimal` trên JSON string ném `InvalidOperationException` chứ không trả `false` (probe 2026-11-19 bắt được, đã sửa).
 2. Thiếu thông tin bắt buộc → agent hỏi lại người dùng, không đoán (ví dụ: "35k là ăn trưa hay ăn tối?").
 3. Tối đa 5 vòng tool-call mỗi tin nhắn; chạm trần → dừng, báo rõ đang kẹt ở đâu.
 
@@ -266,7 +278,7 @@ Quy trình: đổi prompt/model/tool → chạy lại eval, so điểm trước/
 ## 10. Rủi ro & giả định cần kiểm chứng khi bắt đầu triển khai
 
 1. Tương thích phiên bản .NET 10 ↔ Microsoft Agent Framework ↔ Microsoft.Extensions.AI — kiểm chứng bằng spike nhỏ đầu tiên trước khi viết nghiệp vụ.
-2. DeepSeek tool-calling hoạt động ổn với schema 7 tool (chất lượng function calling của deepseek-chat) — đo ngay bằng eval tool-selection.
+2. DeepSeek tool-calling — **ĐÃ KIỂM CHỨNG 2026-11-19** (spike `backend/spikes/DeepSeekToolCallSpikes`, 3 vòng): gọi đúng tool + đúng số tiền; từ chối đúng khi không có tool phù hợp. Hai lỗi thật đã bắt: (a) model bịa `occurredAt` khi không biết giờ hiện tại → **bắt buộc inject giờ hiện tại vào system prompt**; (b) enum là ràng buộc mềm, model trả `transportation` ngoài enum dù đã nhắc → **arguments của tool phải qua chuẩn hóa synonym + FluentValidation trước khi thực thi, không tin output model**. Lưu ý: response trả `model: deepseek-flash` dù request `deepseek-chat` (alias, theo dõi thêm).
 3. Gemini embedding free tier đủ hạn mức cho ~vài trăm ghi chú/tháng; kiểm tra hạn mức hiện hành khi triển khai.
 4. Expo push cần EAS/dev build — xác nhận free tier còn đủ dùng.
 5. Chất lượng embedding tiếng Việt của Gemini — kiểm bằng eval search_notes; nếu kém, đổi model embedding khác qua `IEmbedder` (không sửa agent).

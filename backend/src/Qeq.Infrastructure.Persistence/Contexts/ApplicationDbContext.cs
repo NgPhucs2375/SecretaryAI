@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Qeq.Application.Common;
+using Qeq.Application.Interfaces;
 using Qeq.Domain.Entities;
 
-namespace Qeq.Infrastructure.Persistence;
+namespace Qeq.Infrastructure.Persistence.Contexts;
 
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
